@@ -8,8 +8,6 @@ import EditClimb from "./pages/edit-climb";
 import CreateClimb from "./pages/create-climb";
 import CreateUser from "./pages/create-user";
 
-import './App.css';
-
 
 function App() {
   return (
