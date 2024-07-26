@@ -55,8 +55,7 @@ const EditClimb = () => {
         console.log('Error updating climb: ', error);
         setError('Error updating climb');
       });
-
-
+    // take user back to home page
     window.location = '/';
   };
 

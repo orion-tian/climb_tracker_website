@@ -1,71 +1,78 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const Climb = props => (
+// functional component for rendering each row in the table
+const Climb = ({ climb, deleteClimb }) => (
   <tr>
-    <td>{props.climb.username}</td>
-    <td>{props.climb.description}</td>
-    <td>{props.climb.grade}</td>
-    <td>{props.climb.date.substring(0, 10)}</td>
+    <td>{climb.username}</td>
+    <td>{climb.description}</td>
+    <td>{climb.grade}</td>
+    <td>{climb.date.substring(0, 10)}</td>
     <td>
-      <Link to={"/edit/" + props.climb._id}>edit</Link> |
-      <a href="#" onClick={() => { props.deleteClimb(props.climb._id) }}>delete</a>
+      <Link to={"/edit/" + climb._id}>edit</Link> |
+      <a href="#" onClick={() => { deleteClimb(climb._id) }}>delete</a>
     </td>
   </tr>
 )
 
-export default class ClimbsList extends Component {
-  constructor(props) {
-    super(props);
+const ClimbsList = () => {
+  const [climbs, setClimbs] = useState([]);
+  const [error, setError] = useState('');
 
-    this.deleteClimb = this.deleteClimb.bind(this);
-    this.state = { climbs: [] };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     axios.get('http://localhost:5000/climbs/')
       .then(response => {
-        this.setState({ climbs: response.data });
+        setClimbs(response.data);
       })
       .catch((error) => {
-        console.log(error);
-      })
-  }
+        console.log('Error fecting climbs:', error);
+        setError('Error fetching climbs');
+      });
+  }, []);
 
-  deleteClimb(id) {
+  const deleteClimb = (id) => {
     axios.delete('http://localhost:5000/climbs/' + id)
-      .then(res => console.log(res.data));
-    this.setState({
-      climbs: this.state.climbs.filter(el => el._id !== id)
+      .then(res => {
+        console.log(res.data);
+        setClimbs(climbs.filter(el => el._id !== id));
+      })
+      .catch((error) => {
+        console.log('Error deleting climb:', error);
+        setError('Error deleting climbs');
+      });
+  }
+
+  const climbsList = () => {
+    return climbs.map(currClimb => {
+      return <Climb
+        climb={currClimb}
+        deleteClimb={deleteClimb}
+        key={currClimb._id} />;
     })
   }
 
-  climbsList() {
-    return this.state.climbs.map(currClimb => {
-      return <Climb climb={currClimb} deleteClimb={this.deleteClimb} key={currClimb._id} />;
-    })
-  }
+  if (error) { return <div>{error}</div>; }
 
-  render() {
-    return (
-      <div>
-        <h3>Logged Climbs</h3>
-        <table className="table">
-          <thead className="thead-light">
-            <tr>
-              <th>Username</th>
-              <th>Description</th>
-              <th>Grade</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.climbsList()}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
+  return (
+    <div>
+      <h3>Logged Climbs</h3>
+      <table className="table">
+        <thead className="thead-light">
+          <tr>
+            <th>Username</th>
+            <th>Description</th>
+            <th>Grade</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {climbsList()}
+        </tbody>
+      </table>
+    </div >
+  )
 }
+
+export default ClimbsList;

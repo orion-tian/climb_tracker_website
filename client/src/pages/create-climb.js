@@ -1,140 +1,104 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
-export default class CreateClimb extends Component {
-  constructor(props) {
-    super(props);
+const CreateClimb = () => {
+  const [username, setUsername] = useState('');
+  const [description, setDescription] = useState('');
+  const [grade, setGrade] = useState(0);
+  const [date, setDate] = useState(new Date());
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState('');
 
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangeDescrip = this.onChangeDescrip.bind(this);
-    this.onChangeGrade = this.onChangeGrade.bind(this);
-    this.onChangeDate = this.onChangeDate.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
 
-    this.state = {
-      username: '',
-      description: '',
-      grade: 0,
-      date: new Date(),
-      users: []
-    }
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     axios.get('http://localhost:5000/users/')
       .then(response => {
         if (response.data.length > 0) {
-          this.setState({
-            users: response.data.map(user => user.username),
-            username: response.data[0].username
-          });
+          setUsers(response.data.map(user => user.username));
+          setUsername(response.data[0].username);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
+      .catch(error => {
+        console.log('Error fetching users: ', error);
+        setError('Error fetching users');
+      });
+  }, []);
 
-  onChangeUsername(e) {
-    this.setState({
-      username: e.target.value
-    });
-  }
-
-  onChangeDescrip(e) {
-    this.setState({
-      description: e.target.value
-    });
-  }
-
-  onChangeGrade(e) {
-    this.setState({
-      grade: e.target.value
-    });
-  }
-
-  onChangeDate(date) {
-    this.setState({
-      date: date
-    });
-  }
-
-  onSubmit(e) {
+  const onSubmit = (e) => {
     e.preventDefault();
 
     const climb = {
-      username: this.state.username,
-      description: this.state.description,
-      grade: this.state.grade,
-      date: this.state.date
-    }
+      username,
+      description,
+      grade,
+      date,
+    };
 
     console.log(climb);
 
     axios.post('http://localhost:5000/climbs/add', climb)
-      .then(res => console.log(res.data));
-
+      .then(res => console.log(res.data))
+      .catch(error => {
+        console.log('Error adding climb: ', error);
+        setError('Error adding climb');
+      });
     // take user back to home page
     window.location = '/';
-  }
+  };
+  if (error) { return <div>{error}</div>; }
 
-  render() {
-    return (
-      <div>
-        <h3>Create New Climb Log</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Username: </label>
-            <select ref="userInput"
-              required
-              className="form-control"
-              value={this.state.username}
-              onChange={this.onChangeUsername}>
-              {
-                this.state.users.map(function (user) {
-                  return <option
-                    key={user}
-                    value={user}>{user}
-                  </option>;
-                })
-              }
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Description: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.description}
-              onChange={this.onChangeDescrip}
+  return (
+    <div>
+      <h3>Create New Climb Log</h3>
+      <form onSubmit={onSubmit}>
+        <div className="form-group">
+          <label>Username: </label>
+          <select
+            className="form-control"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}>
+            {users.map(user => (
+              <option key={user} value={user}>{user}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Description: </label>
+          <input type="text"
+            required
+            className="form-control"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Grade (V-Scale): </label>
+          <input
+            type="text"
+            className="form-control"
+            value={grade}
+            onChange={(e) => setGrade(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Date: </label>
+          <div>
+            <DatePicker
+              selected={date}
+              onChange={(e) => setDate(e.target.value)}
             />
           </div>
-          <div className="form-group">
-            <label>Grade (V-Scale): </label>
-            <input
-              type="text"
-              className="form-control"
-              value={this.state.grade}
-              onChange={this.onChangeGrade}
-            />
-          </div>
-          <div className="form-group">
-            <label>Date: </label>
-            <div>
-              <DatePicker
-                selected={this.state.date}
-                onChange={this.onChangeDate}
-              />
-            </div>
-          </div>
+        </div>
 
-          <div className="form-group">
-            <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
-          </div>
-        </form>
-      </div>
-    )
-  }
+        <div className="form-group">
+          <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
+        </div>
+      </form>
+    </div>
+  )
 }
+
+export default CreateClimb;
+
