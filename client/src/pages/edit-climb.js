@@ -10,6 +10,7 @@ const EditClimb = () => {
   const [description, setDescription] = useState('');
   const [grade, setGrade] = useState(0);
   const [date, setDate] = useState(new Date());
+  const [img, setImg] = useState(null);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
 
@@ -20,6 +21,7 @@ const EditClimb = () => {
         setDescription(response.data.description);
         setGrade(response.data.grade);
         setDate(new Date(response.data.date));
+        setImg(response.data.img);
       })
       .catch(error => {
         console.log('Error fetching climb data: ', error);
@@ -36,27 +38,29 @@ const EditClimb = () => {
       });
   }, [id]);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    const climb = {
-      username,
-      description,
-      grade,
-      date,
-    };
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('description', description);
+    formData.append('grade', grade);
+    formData.append('date', date);
+    if (img) {
+      formData.append('img', img); // Append the file
+    }
 
-    axios.post('http://localhost:5000/climbs/update/' + id, climb)
-      .then(res => {
-        console.log(res.data);
-        // navigate('/');
-      })
-      .catch(error => {
-        console.log('Error updating climb: ', error);
-        setError('Error updating climb');
+    try {
+      await axios.post('http://localhost:5000/climbs/update', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-    // take user back to home page
-    window.location = '/';
+      window.location = '/';
+    } catch (error) {
+      console.log('Error adding climb: ', error);
+      setError('Error adding climb');
+    }
   };
 
   if (error) { return <div>{error}</div>; }
@@ -101,7 +105,14 @@ const EditClimb = () => {
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
-
+        <div className="form-group">
+          <label>Choose an image: </label>
+          <input type="file"
+            accept=".png, .jpg, .jpeg, .HEIC"
+            className="form-control"
+            onChange={(e) => setImg(e.target.files[0])}
+          />
+        </div>
         <div className="form-group">
           <input type="submit" value="Edit Climb Log" className="btn btn-primary" />
         </div>

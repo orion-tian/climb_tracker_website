@@ -2,6 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+const toBase64 = (input) => {
+  let arrayBuffer;
+
+  if (input instanceof ArrayBuffer) {
+    arrayBuffer = input;
+  } else if (Array.isArray(input) || ArrayBuffer.isView(input)) {
+    arrayBuffer = new Uint8Array(input).buffer;
+  } else {
+    console.error('Invalid input: Expected ArrayBuffer or array-like object');
+    return '';
+  }
+
+  const binaryString = Array.from(new Uint8Array(arrayBuffer))
+    .map(byte => String.fromCharCode(byte))
+    .join('');
+
+  return window.btoa(binaryString);
+};
+
 // functional component for rendering each row in the table
 const Climb = ({ climb, deleteClimb }) => (
   <tr>
@@ -9,6 +28,14 @@ const Climb = ({ climb, deleteClimb }) => (
     <td>{climb.description}</td>
     <td>{climb.grade}</td>
     <td>{climb.date.substring(0, 10)}</td>
+    <td>
+      {climb.image && (
+        <img
+          src={`data:image/png;base64,${toBase64(climb.image.data)}`}
+          style={{ width: '200px', height: 'auto' }} // Adjust size as needed
+        />
+      )}
+    </td>
     <td>
       <Link to={"/edit/" + climb._id}>edit</Link> |
       <a href="#" onClick={() => { deleteClimb(climb._id) }}>delete</a>
@@ -44,6 +71,9 @@ const ClimbsList = () => {
   }
 
   const climbsList = () => {
+    climbs.sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
     return climbs.map(currClimb => {
       return <Climb
         climb={currClimb}
@@ -64,6 +94,7 @@ const ClimbsList = () => {
             <th>Description</th>
             <th>Grade</th>
             <th>Date</th>
+            <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>

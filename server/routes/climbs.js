@@ -1,5 +1,10 @@
 const router = require('express').Router();
+const multer = require('multer');
 let Climb = require('../models/climb.model');
+
+// Set up Multer for file storage
+const storage = multer.memoryStorage(); // Use memory storage for handling files in memory
+const upload = multer({ storage: storage });
 
 router.route('/').get((req, res) => {
   Climb.find()
@@ -7,13 +12,21 @@ router.route('/').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/add').post((req, res) => {
+router.route('/add').post(upload.single('img'), (req, res) => {
+  console.log('File:', req.file);
+  if (!req.file) {
+    return res.status(400).json('No file uploaded.');
+  }
+
   const username = req.body.username;
   const description = req.body.description;
   const grade = Number(req.body.grade);
   const date = Date.parse(req.body.date);
+  const image = req.file.buffer;
 
-  const newClimb = new Climb({ username, description, grade, date });
+  console.log('File:', req.file);
+
+  const newClimb = new Climb({ username, description, grade, date, image });
 
   newClimb.save()
     .then(() => res.json('Climb added!'))
@@ -39,6 +52,9 @@ router.route('/update/:id').post((req, res) => {
       climb.description = req.body.description;
       climb.grade = Number(req.body.grade);
       climb.date = Date.parse(req.body.date);
+      if (req.file) {
+        climb.image = req.file.buffer;
+      }
 
       climb.save()
         .then(() => res.json('Climb updated!'))

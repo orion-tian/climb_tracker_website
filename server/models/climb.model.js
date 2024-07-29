@@ -7,6 +7,7 @@ const climbSchema = new Schema({
   description: { type: String, required: true },
   grade: { type: Number, required: true },
   date: { type: Date, required: true },
+  image: { type: Buffer, required: true }
 }, {
   timestamps: true,
 });
