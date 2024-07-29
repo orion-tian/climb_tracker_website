@@ -3,8 +3,22 @@ const multer = require('multer');
 let Climb = require('../models/climb.model');
 
 // Set up Multer for file storage
-const storage = multer.memoryStorage(); // Use memory storage for handling files in memory
-const upload = multer({ storage: storage });
+function fileFilter(req, file, cb) {
+  if (file.mimetype === 'image/jpeg' || // accept .jpeg, png, jpg images
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/png'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+}
+const upload = multer({
+  limits: {
+    fileSize: 10 * 1024 * 1024, // limit the size of uploaded file to 1MB
+  },
+  fileFilter: fileFilter
+})
 
 router.route('/').get((req, res) => {
   Climb.find()
@@ -45,16 +59,14 @@ router.route('/:id').delete((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/update/:id').post((req, res) => {
+router.route('/update/:id').post(upload.single('img'), (req, res) => {
   Climb.findById(req.params.id)
     .then(climb => {
       climb.username = req.body.username;
       climb.description = req.body.description;
       climb.grade = Number(req.body.grade);
       climb.date = Date.parse(req.body.date);
-      if (req.file) {
-        climb.image = req.file.buffer;
-      }
+      climb.image = req.file.buffer;
 
       climb.save()
         .then(() => res.json('Climb updated!'))

@@ -21,7 +21,6 @@ const EditClimb = () => {
         setDescription(response.data.description);
         setGrade(response.data.grade);
         setDate(new Date(response.data.date));
-        setImg(response.data.img);
       })
       .catch(error => {
         console.log('Error fetching climb data: ', error);
@@ -51,7 +50,7 @@ const EditClimb = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/climbs/update', formData, {
+      await axios.post('http://localhost:5000/climbs/update/' + id, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -108,7 +107,7 @@ const EditClimb = () => {
         <div className="form-group">
           <label>Choose an image: </label>
           <input type="file"
-            accept=".png, .jpg, .jpeg, .HEIC"
+            accept=".png, .jpg, .jpeg"
             className="form-control"
             onChange={(e) => setImg(e.target.files[0])}
           />

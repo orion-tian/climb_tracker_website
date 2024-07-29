@@ -2,23 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const toBase64 = (input) => {
-  let arrayBuffer;
-
-  if (input instanceof ArrayBuffer) {
-    arrayBuffer = input;
-  } else if (Array.isArray(input) || ArrayBuffer.isView(input)) {
-    arrayBuffer = new Uint8Array(input).buffer;
-  } else {
-    console.error('Invalid input: Expected ArrayBuffer or array-like object');
-    return '';
-  }
-
-  const binaryString = Array.from(new Uint8Array(arrayBuffer))
-    .map(byte => String.fromCharCode(byte))
-    .join('');
-
-  return window.btoa(binaryString);
+const toBase64 = (buffer) => {
+  let binary = '';
+  let bytes = new Uint8Array(buffer);
+  bytes.forEach(byte => {
+    binary += String.fromCharCode(byte)
+  })
+  return window.btoa(binary);
 };
 
 // functional component for rendering each row in the table

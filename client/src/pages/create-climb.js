@@ -98,7 +98,7 @@ const CreateClimb = () => {
         <div className="form-group">
           <label>Choose an image: </label>
           <input type="file"
-            accept=".png, .jpg, .jpeg, .HEIC"
+            accept=".png, .jpg, .jpeg"
             className="form-control"
             onChange={(e) => setImg(e.target.files[0])}
           />
