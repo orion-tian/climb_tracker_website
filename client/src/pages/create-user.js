@@ -47,6 +47,7 @@ const CreateUser = () => {
     <div>
       <h3>Create New User</h3>
       <form onSubmit={onSubmit}>
+
         <div className="form-group">
           <label>Username: </label>
           <input type="text"
@@ -56,6 +57,7 @@ const CreateUser = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
+
         <div className="form-group">
           <input type="submit" value="Create User" className="btn btn-primary" />
         </div>

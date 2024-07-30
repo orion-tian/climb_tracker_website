@@ -1,31 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-const toBase64 = (buffer) => {
-  let binary = '';
-  let bytes = new Uint8Array(buffer);
-  bytes.forEach(byte => {
-    binary += String.fromCharCode(byte)
-  })
-  return window.btoa(binary);
-};
+import { toBase64 } from "../utils/funcs.js";
 
 // functional component for rendering each row in the table
 const Climb = ({ climb, deleteClimb }) => (
   <tr>
     <td>{climb.username}</td>
-    <td>{climb.description}</td>
-    <td>{climb.grade}</td>
-    <td>{climb.date.substring(0, 10)}</td>
     <td>
       {climb.image && (
         <img
           src={`data:image/png;base64,${toBase64(climb.image.data)}`}
+          alt="climb"
+          loading="lazy"
           style={{ width: '200px', height: 'auto' }} // Adjust size as needed
         />
       )}
     </td>
+    <td>{climb.description}</td>
+    <td>{climb.grade}</td>
+    <td>{climb.attempts}</td>
+    <td>{climb.date.substring(0, 10)}</td>
     <td>
       <Link to={"/edit/" + climb._id}>edit</Link> |
       <a href="#" onClick={() => { deleteClimb(climb._id) }}>delete</a>
@@ -81,10 +76,11 @@ const ClimbsList = () => {
         <thead className="thead-light">
           <tr>
             <th>Username</th>
+            <th>Image</th>
             <th>Description</th>
             <th>Grade</th>
+            <th>Attempts</th>
             <th>Date</th>
-            <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>
