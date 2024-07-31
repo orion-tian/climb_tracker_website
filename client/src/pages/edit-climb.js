@@ -3,7 +3,6 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { toBase64 } from "../utils/funcs.js";
 
 const EditClimb = () => {
   const { id } = useParams();
@@ -30,7 +29,7 @@ const EditClimb = () => {
         setDate(new Date(date));
 
         if (image) {
-          setImgSrc(`data:image/png;base64,${toBase64(image.data)}`);
+          setImgSrc('http://localhost:5000/' + image);
         }
       } catch (error) {
         console.log('Error fetching climb data: ', error);
@@ -52,9 +51,6 @@ const EditClimb = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    console.log('Image:', image);
-
     const formData = new FormData();
     formData.append('username', username);
     formData.append('image', image);
@@ -150,7 +146,7 @@ const EditClimb = () => {
           <label>Date: </label>
           <DatePicker
             selected={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(e)}
           />
         </div>
 

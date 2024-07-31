@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { toBase64 } from "../utils/funcs.js";
 
 const CreateClimb = () => {
   const [username, setUsername] = useState('');
@@ -128,7 +127,7 @@ const CreateClimb = () => {
           <div>
             <DatePicker
               selected={date}
-              onChange={(e) => setDate(e.target.value)}
+              onChange={(e) => setDate(e)}
             />
           </div>
         </div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { toBase64 } from "../utils/funcs.js";
 
 // functional component for rendering each row in the table
 const Climb = ({ climb, deleteClimb }) => (
@@ -10,7 +9,7 @@ const Climb = ({ climb, deleteClimb }) => (
     <td>
       {climb.image && (
         <img
-          src={`data:image/png;base64,${toBase64(climb.image.data)}`}
+          src={'http://localhost:5000/' + climb.image}
           alt="climb"
           loading="lazy"
           style={{ width: '200px', height: 'auto' }}

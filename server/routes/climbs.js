@@ -1,9 +1,19 @@
 const router = require('express').Router();
 const multer = require('multer');
+const fs = require('fs');
 let Climb = require('../models/climb.model');
 
 // Set up Multer for file storage
-function fileFilter(req, file, cb) {
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' ||
     file.mimetype === 'image/jpg' ||
     file.mimetype === 'image/png'
@@ -14,6 +24,7 @@ function fileFilter(req, file, cb) {
   }
 }
 const upload = multer({
+  storage: storage,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10 MB file size limit
   },
@@ -27,19 +38,15 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/add').post(upload.single('image'), (req, res) => {
-  console.log('File:', req.file);
   if (!req.file) {
     return res.status(400).json('No file uploaded.');
   }
-
   const username = req.body.username;
-  const image = req.file.buffer;
+  const image = req.file.path;
   const description = req.body.description;
   const grade = Number(req.body.grade);
   const attempts = Number(req.body.attempts);
   const date = Date.parse(req.body.date);
-
-  console.log('File:', req.file);
 
   const newClimb = new Climb({ username, image, description, grade, attempts, date });
 
@@ -54,8 +61,18 @@ router.route('/:id').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id').delete((req, res) => {
-  Climb.findByIdAndDelete(req.params.id)
+router.route('/:id').delete(async (req, res) => {
+  const climb = await Climb.findById(req.params.id);
+  if (climb.image) {
+    fs.unlink(climb.image, (err) => {
+      if (err) {
+        console.error('Error deleting image file:', err);
+        return res.status(500).json('Error deleting image file');
+      }
+    });
+  }
+
+  await Climb.findByIdAndDelete(req.params.id)
     .then(climb => res.json('Climb deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -63,15 +80,12 @@ router.route('/:id').delete((req, res) => {
 router.route('/update/:id').post(upload.single('image'), (req, res) => {
   Climb.findById(req.params.id)
     .then(climb => {
-
       if (!climb) {
         return res.status(404).json('Climb not found.');
       }
-
-      console.log('File:', req.file);
       // Only update image if a new one is uploaded
       if (req.file) {
-        climb.image = req.file.buffer;
+        climb.image = req.file.path;
       }
 
       climb.username = req.body.username;
