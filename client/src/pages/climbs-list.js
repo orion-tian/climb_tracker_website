@@ -13,7 +13,7 @@ const Climb = ({ climb, deleteClimb }) => (
           src={`data:image/png;base64,${toBase64(climb.image.data)}`}
           alt="climb"
           loading="lazy"
-          style={{ width: '200px', height: 'auto' }} // Adjust size as needed
+          style={{ width: '200px', height: 'auto' }}
         />
       )}
     </td>

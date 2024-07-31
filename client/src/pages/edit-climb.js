@@ -21,8 +21,8 @@ const EditClimb = () => {
     const fetchData = async () => {
       try {
         const climbResponse = await axios.get('http://localhost:5000/climbs/' + id);
-        const { userName, image, description, grade, attempts, date } = climbResponse.data;
-        setUsername(userName);
+        const { username, image, description, grade, attempts, date } = climbResponse.data;
+        setUsername(username);
         setImage(image);
         setDescription(description);
         setGrade(grade);
