@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, new Date().toISOString() + file.originalname);
   }
 });
 
@@ -85,6 +85,12 @@ router.route('/update/:id').post(upload.single('image'), (req, res) => {
       }
       // Only update image if a new one is uploaded
       if (req.file) {
+        fs.unlink(climb.image, (err) => {
+          if (err) {
+            console.error('Error deleting image file:', err);
+            return res.status(500).json('Error deleting image file');
+          }
+        });
         climb.image = req.file.path;
       }
 
