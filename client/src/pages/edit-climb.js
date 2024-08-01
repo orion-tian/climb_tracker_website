@@ -60,7 +60,7 @@ const EditClimb = () => {
     formData.append('date', date);
 
     try {
-      await axios.post('http://localhost:5000/climbs/update/' + id, formData, {
+      await axios.patch('http://localhost:5000/climbs/update/' + id, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

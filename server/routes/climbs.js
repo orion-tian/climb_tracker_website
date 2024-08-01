@@ -77,8 +77,9 @@ router.route('/:id').delete(async (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/update/:id').post(upload.single('image'), (req, res) => {
-  Climb.findById(req.params.id)
+router.route('/update/:id').patch(upload.single('image'), async (req, res) => {
+
+  await Climb.findById(req.params.id)
     .then(climb => {
       if (!climb) {
         return res.status(404).json('Climb not found.');
@@ -94,11 +95,11 @@ router.route('/update/:id').post(upload.single('image'), (req, res) => {
         climb.image = req.file.path;
       }
 
-      climb.username = req.body.username;
-      climb.description = req.body.description;
-      climb.grade = Number(req.body.grade);
-      climb.attempts = Number(req.body.attempts);
-      climb.date = Date.parse(req.body.date);
+      if (req.body.username) climb.username = req.body.username;
+      if (req.body.description) climb.description = req.body.description;
+      if (req.body.grade) climb.grade = Number(req.body.grade);
+      if (req.body.attempts) climb.attempts = Number(req.body.attempts);
+      if (req.body.date) climb.date = Date.parse(req.body.date);
 
       climb.save()
         .then(() => res.json('Climb updated!'))
