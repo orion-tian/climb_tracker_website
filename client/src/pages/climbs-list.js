@@ -72,7 +72,7 @@ const ClimbsList = () => {
     <div>
       <h3>Logged Climbs</h3>
       <table className="table">
-        <thead className="thead-light">
+        <thead className="thead">
           <tr>
             <th>Username</th>
             <th>Image</th>

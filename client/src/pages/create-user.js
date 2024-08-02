@@ -31,7 +31,7 @@ const CreateUser = () => {
     console.log(newUser);
 
     // Add the new user
-    axios.post('http://localhost:5000/users/add', newUser)
+    axios.post('http://localhost:5000/users/signup', newUser)
       .then(res => {
         console.log(res.data);
         setUsername('');

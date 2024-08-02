@@ -2,6 +2,7 @@ const router = require('express').Router();
 const multer = require('multer');
 const fs = require('fs');
 let Climb = require('../models/climb.model');
+const checkAuth = require('../middleware/checkAuth');
 
 // Set up Multer for file storage
 const storage = multer.diskStorage({
@@ -31,13 +32,13 @@ const upload = multer({
   fileFilter: fileFilter
 })
 
-router.route('/').get((req, res) => {
+router.get('/', checkAuth, (req, res) => {
   Climb.find()
     .then(climbs => res.json(climbs))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/add').post(upload.single('image'), (req, res) => {
+router.post('/add', checkAuth, upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json('No file uploaded.');
   }
@@ -55,13 +56,13 @@ router.route('/add').post(upload.single('image'), (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id').get((req, res) => {
+router.get('/:id', checkAuth, (req, res) => {
   Climb.findById(req.params.id)
     .then(climb => res.json(climb))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id').delete(async (req, res) => {
+router.delete('/:id', checkAuth, async (req, res) => {
   const climb = await Climb.findById(req.params.id);
   if (climb.image) {
     fs.unlink(climb.image, (err) => {
@@ -77,7 +78,7 @@ router.route('/:id').delete(async (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/update/:id').patch(upload.single('image'), async (req, res) => {
+router.patch('/update/:id', checkAuth, upload.single('image'), async (req, res) => {
 
   await Climb.findById(req.params.id)
     .then(climb => {
