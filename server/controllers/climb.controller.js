@@ -7,6 +7,12 @@ exports.getClimbs = (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 }
 
+exports.getClimb = (req, res) => {
+  Climb.findById(req.params.id)
+    .then(climb => res.json(climb))
+    .catch(err => res.status(400).json('Error: ' + err));
+}
+
 exports.addClimb = (req, res) => {
   if (!req.file) {
     return res.status(400).json('No file uploaded.');
@@ -25,30 +31,7 @@ exports.addClimb = (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 }
 
-exports.getClimb = (req, res) => {
-  Climb.findById(req.params.id)
-    .then(climb => res.json(climb))
-    .catch(err => res.status(400).json('Error: ' + err));
-}
-
-exports.deleteClimb = async (req, res) => {
-  const climb = await Climb.findById(req.params.id);
-  if (climb.image) {
-    fs.unlink(climb.image, (err) => {
-      if (err) {
-        console.error('Error deleting image file:', err);
-        return res.status(500).json('Error deleting image file');
-      }
-    });
-  }
-
-  await Climb.findByIdAndDelete(req.params.id)
-    .then(climb => res.json('Climb deleted.'))
-    .catch(err => res.status(400).json('Error: ' + err));
-}
-
 exports.updateClimb = async (req, res) => {
-
   await Climb.findById(req.params.id)
     .then(climb => {
       if (!climb) {
@@ -75,5 +58,21 @@ exports.updateClimb = async (req, res) => {
         .then(() => res.json('Climb updated!'))
         .catch(err => res.status(400).json('Error: ' + err));
     })
+    .catch(err => res.status(400).json('Error: ' + err));
+}
+
+exports.deleteClimb = async (req, res) => {
+  const climb = await Climb.findById(req.params.id);
+  if (climb.image) {
+    fs.unlink(climb.image, (err) => {
+      if (err) {
+        console.error('Error deleting image file:', err);
+        return res.status(500).json('Error deleting image file');
+      }
+    });
+  }
+
+  await Climb.findByIdAndDelete(req.params.id)
+    .then(climb => res.json('Climb deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 }

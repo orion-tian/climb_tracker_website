@@ -28,9 +28,9 @@ const upload = multer({
 })
 
 router.get('/', checkAuth, climbController.getClimbs);
-router.post('/add', checkAuth, upload.single('image'), climbController.addClimb);
 router.get('/:id', checkAuth, climbController.getClimb);
-router.delete('/:id', checkAuth, climbController.deleteClimb);
+router.post('/add', checkAuth, upload.single('image'), climbController.addClimb);
 router.patch('/update/:id', checkAuth, upload.single('image'), climbController.updateClimb);
+router.delete('/:id', checkAuth, climbController.deleteClimb);
 
 module.exports = router;
