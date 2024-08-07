@@ -1,11 +1,12 @@
 import { React, useState } from "react";
-import Signup from "./signup";
-import Login from "./login";
+import Signup from "../components/signup";
+import Login from "../components/login";
 
 const Auth = () => {
   const [login, setLogin] = useState(false);
   return (
-    <div className="container d-flex flex-column align-items-center">
+    // <div className="container d-flex flex-column align-items-center mt-5">
+    <div className="container">
       {
         login ? (
           <>

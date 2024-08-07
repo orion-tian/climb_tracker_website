@@ -1,32 +1,44 @@
-import { React, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Navbar from "./components/navbar.component";
+import Login from "./components/login";
+import Signup from "./components/signup";
 import ClimbsList from "./pages/climbs-list";
 import EditClimb from "./pages/edit-climb";
 import CreateClimb from "./pages/create-climb";
-import Auth from "./pages/auth";
+import Navbar from "./components/navbar.component";
+import Home from "./pages/home";
+
+import { clearMessage } from "./redux/actions/message";
 
 
 function App() {
-  const [user, setUser] = useState(false);
-  return (
-    <BrowserRouter>
-      <div className="container">
-        {user ? <><Navbar />
-          <br />
-          <Routes>
-            <Route path="/" element={<ClimbsList />} />
-            <Route path="/edit/:id" element={<EditClimb />} />
-            <Route path="/create" element={<CreateClimb />} />
-          </Routes>
-        </> : <Auth />}
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  let location = useLocation();
 
+  useEffect(() => {
+    if (["/login", "/register"].includes(location.pathname)) {
+      dispatch(clearMessage()); // clear message when changing location
+    }
+  }, [dispatch]);
+
+  return (
+    <div>
+      <Navbar currentUser={currentUser} />
+      <div className="container mt-3">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/climbs" element={<ClimbsList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
       </div>
 
-    </BrowserRouter>
+    </div>
   );
-}
+};
 
 export default App;

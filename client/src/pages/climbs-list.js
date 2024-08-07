@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
 import axios from 'axios';
+import authHeader from '../redux/services/auth.header';
+
+import climbService from '../redux/services/climb.service';
 
 // functional component for rendering each row in the table
 const Climb = ({ climb, deleteClimb }) => (
@@ -30,9 +36,10 @@ const Climb = ({ climb, deleteClimb }) => (
 const ClimbsList = () => {
   const [climbs, setClimbs] = useState([]);
   const [error, setError] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/climbs/')
+    axios.get('http://localhost:5000/climbs/', { headers: authHeader() })
       .then(response => {
         setClimbs(response.data);
       })
@@ -54,41 +61,52 @@ const ClimbsList = () => {
       });
   }
 
-  const climbsList = () => {
-    climbs.sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
-    });
-    return climbs.map(currClimb => {
-      return <Climb
-        climb={currClimb}
-        deleteClimb={deleteClimb}
-        key={currClimb._id} />;
-    })
+  const ClimbListFunc = () => {
+    const { user: currentUser } = useSelector((state) => state.auth);
+    if (!currentUser) {
+      return <Navigate to="/login" />;
+    }
+
+    for (let climb of climbs) {
+      if (climb.username === currentUser.username) {
+        console.log(climb);
+      }
+
+      climbs.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
+      return climbs.map(currClimb => {
+        return <Climb
+          climb={currClimb}
+          deleteClimb={deleteClimb}
+          key={currClimb._id} />;
+      })
+    }
+
+    if (error) { return <div>{error}</div>; }
+
+    return (
+      <div>
+        <h3>Logged Climbs</h3>
+        <table className="table">
+          <thead className="thead">
+            <tr>
+              <th>Username</th>
+              <th>Image</th>
+              <th>Description</th>
+              <th>Grade</th>
+              <th>Attempts</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ClimbListFunc()}
+          </tbody>
+        </table>
+      </div >
+    )
   }
-
-  if (error) { return <div>{error}</div>; }
-
-  return (
-    <div>
-      <h3>Logged Climbs</h3>
-      <table className="table">
-        <thead className="thead">
-          <tr>
-            <th>Username</th>
-            <th>Image</th>
-            <th>Description</th>
-            <th>Grade</th>
-            <th>Attempts</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {climbsList()}
-        </tbody>
-      </table>
-    </div >
-  )
 }
 
 export default ClimbsList;

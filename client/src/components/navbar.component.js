@@ -1,22 +1,67 @@
-import React, { Component } from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
+import { logout } from '../redux/actions/auth';
 
-export default class Navbar extends Component {
-  render() {
-    return (
-      <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
-        <Link to="/" className="navbar-brand">Climbing Log</Link>
-        <div className="collpase navbar-collapse">
-          <ul className="navbar-nav mr-auto">
-            <li className="navbar-item">
-              <Link to="/" className="nav-link">Climbs</Link>
+const Navbar = ({ currentUser }) => {
+  const dispatch = useDispatch();
+
+  const logOut = useCallback(() => {
+    dispatch(logout());
+  }, [dispatch]);
+
+  return (
+    <nav className="navbar navbar-expand navbar-dark bg-dark">
+      <Link to="/" className="navbar-brand">
+        Climb Tracker
+      </Link>
+
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav mr-auto">
+          {currentUser && (
+            <li className="nav-item">
+              <Link to={"/climbs"} className="nav-link">
+                Climbs
+              </Link>
             </li>
-            <li className="navbar-item">
-              <Link to="/create" className="nav-link">Create Climb Log</Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    );
-  }
+          )}
+        </ul>
+
+        <ul className="navbar-nav ml-auto">
+          {currentUser ? (
+            <>
+              <li className="nav-item">
+                <Link to={"/"} className="nav-link">
+                  {currentUser.username}
+                </Link>
+              </li>
+              <li className="nav-item">
+                <a href="/login" className="nav-link" onClick={logOut}>
+                  LogOut
+                </a>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="nav-item">
+                <Link to={"/login"} className="nav-link">
+                  Login
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to={"/signup"} className="nav-link">
+                  Sign Up
+                </Link>
+              </li>
+            </>
+
+          )}
+        </ul>
+      </div>
+    </nav>
+  );
+
 }
+
+export default Navbar;
