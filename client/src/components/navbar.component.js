@@ -20,25 +20,26 @@ const Navbar = ({ currentUser }) => {
         <ul className="navbar-nav mr-auto">
           {currentUser && (
             <li className="nav-item">
-              <Link to={"/climbs"} className="nav-link">
-                Climbs
+              <Link to={"/create"} className="nav-link">
+                Create Climb
               </Link>
             </li>
+
           )}
         </ul>
 
-        <ul className="navbar-nav ml-auto">
+        <ul className="navbar-nav ms-auto">
           {currentUser ? (
             <>
               <li className="nav-item">
-                <Link to={"/"} className="nav-link">
-                  {currentUser.username}
+                <Link to={"/climbs"} className="nav-link">
+                  {currentUser.user.username}
                 </Link>
               </li>
               <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={logOut}>
+                <Link to="/login" className="nav-link" onClick={logOut}>
                   LogOut
-                </a>
+                </Link>
               </li>
             </>
           ) : (

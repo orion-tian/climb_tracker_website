@@ -3,9 +3,6 @@ import { Link, Navigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
-import axios from 'axios';
-import authHeader from '../redux/services/auth.header';
-
 import climbService from '../redux/services/climb.service';
 
 // functional component for rendering each row in the table
@@ -39,7 +36,7 @@ const ClimbsList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/climbs/', { headers: authHeader() })
+    climbService.getAllClimbs()
       .then(response => {
         setClimbs(response.data);
       })
@@ -50,7 +47,7 @@ const ClimbsList = () => {
   }, []);
 
   const deleteClimb = (id) => {
-    axios.delete('http://localhost:5000/climbs/' + id)
+    climbService.deleteClimb(id)
       .then(res => {
         console.log(res.data);
         setClimbs(climbs.filter(el => el._id !== id));
@@ -68,45 +65,48 @@ const ClimbsList = () => {
     }
 
     for (let climb of climbs) {
-      if (climb.username === currentUser.username) {
+      console.log(climb.username);
+      console.log(currentUser);
+      if (climb.username === currentUser.user.username) {
         console.log(climb);
       }
-
-      climbs.sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
-      });
-      return climbs.map(currClimb => {
-        return <Climb
-          climb={currClimb}
-          deleteClimb={deleteClimb}
-          key={currClimb._id} />;
-      })
     }
 
-    if (error) { return <div>{error}</div>; }
-
-    return (
-      <div>
-        <h3>Logged Climbs</h3>
-        <table className="table">
-          <thead className="thead">
-            <tr>
-              <th>Username</th>
-              <th>Image</th>
-              <th>Description</th>
-              <th>Grade</th>
-              <th>Attempts</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ClimbListFunc()}
-          </tbody>
-        </table>
-      </div >
-    )
+    climbs.sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+    return climbs.map(currClimb => {
+      return <Climb
+        climb={currClimb}
+        deleteClimb={deleteClimb}
+        key={currClimb._id} />;
+    })
   }
+
+  if (error) { return <div>{error}</div>; }
+
+  return (
+    <div>
+      <h3>Logged Climbs</h3>
+      <table className="table">
+        <thead className="thead">
+          <tr>
+            <th>Username</th>
+            <th>Image</th>
+            <th>Description</th>
+            <th>Grade</th>
+            <th>Attempts</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ClimbListFunc()}
+        </tbody>
+      </table>
+    </div >
+  )
 }
+
 
 export default ClimbsList;

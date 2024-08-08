@@ -3,6 +3,8 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
+import climbService from '../redux/services/climb.service';
+
 const CreateClimb = () => {
   const [username, setUsername] = useState('');
   const [image, setImage] = useState(null);
@@ -43,11 +45,7 @@ const CreateClimb = () => {
     formData.append('date', date);
 
     try {
-      await axios.post('http://localhost:5000/climbs/add', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await climbService.createClimb(formData);
       window.location = '/';
     } catch (error) {
       console.log('Error adding climb: ', error);

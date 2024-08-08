@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from 'react-router-dom';
+
 import axios from 'axios';
+import climbService from '../redux/services/climb.service';
+
 
 const EditClimb = () => {
   const { id } = useParams();
@@ -19,7 +22,7 @@ const EditClimb = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const climbResponse = await axios.get('http://localhost:5000/climbs/' + id);
+        const climbResponse = await climbService.getClimb(id);
         const { username, image, description, grade, attempts, date } = climbResponse.data;
         setUsername(username);
         setImage(image);
@@ -60,11 +63,7 @@ const EditClimb = () => {
     formData.append('date', date);
 
     try {
-      await axios.patch('http://localhost:5000/climbs/update/' + id, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await climbService.updateClimb(id, formData);
       window.location = '/';
     } catch (error) {
       console.log('Error updating climb: ', error);
