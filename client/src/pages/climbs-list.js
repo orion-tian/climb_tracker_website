@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 
 import climbService from '../redux/services/climb.service';
 
 // functional component for rendering each row in the table
 const Climb = ({ climb, deleteClimb }) => (
   <tr>
-    <td>{climb.username}</td>
     <td>
       {climb.image && (
         <img
@@ -33,12 +31,16 @@ const Climb = ({ climb, deleteClimb }) => (
 const ClimbsList = () => {
   const [climbs, setClimbs] = useState([]);
   const [error, setError] = useState('');
-  const dispatch = useDispatch();
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    climbService.getAllClimbs()
+    climbService.getClimbsPerUser()
       .then(response => {
-        setClimbs(response.data);
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].username === currentUser.user.username) {
+            setClimbs(response.data[i].climbs)
+          }
+        }
       })
       .catch((error) => {
         console.log('Error fecting climbs:', error);
@@ -59,17 +61,8 @@ const ClimbsList = () => {
   }
 
   const ClimbListFunc = () => {
-    const { user: currentUser } = useSelector((state) => state.auth);
     if (!currentUser) {
       return <Navigate to="/login" />;
-    }
-
-    for (let climb of climbs) {
-      console.log(climb.username);
-      console.log(currentUser);
-      if (climb.username === currentUser.user.username) {
-        console.log(climb);
-      }
     }
 
     climbs.sort((a, b) => {
@@ -91,7 +84,6 @@ const ClimbsList = () => {
       <table className="table">
         <thead className="thead">
           <tr>
-            <th>Username</th>
             <th>Image</th>
             <th>Description</th>
             <th>Grade</th>

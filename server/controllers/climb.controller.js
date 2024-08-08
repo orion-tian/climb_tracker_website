@@ -7,6 +7,26 @@ exports.getClimbs = (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 }
 
+exports.climbsPerUser = (req, res) => {
+  Climb.aggregate([
+    {
+      $group: {
+        _id: "$username",
+        climbs: { $push: "$$ROOT" }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        username: "$_id",
+        climbs: 1
+      }
+    }
+  ])
+    .then(result => res.json(result))
+    .catch(err => res.status(400).json('Error: ' + err));
+}
+
 exports.getClimb = (req, res) => {
   Climb.findById(req.params.id)
     .then(climb => res.json(climb))

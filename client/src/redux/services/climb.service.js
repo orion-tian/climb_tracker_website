@@ -7,6 +7,10 @@ const getAllClimbs = () => {
   return axios.get(API_URL, { headers: authHeader() });
 }
 
+const getClimbsPerUser = () => {
+  return axios.get(API_URL + 'usergroup/', { headers: authHeader() });
+}
+
 const getClimb = (id) => {
   return axios.get(API_URL + id, { headers: authHeader() });
 }
@@ -25,6 +29,7 @@ const deleteClimb = (id) => {
 
 export default {
   getAllClimbs,
+  getClimbsPerUser,
   getClimb,
   createClimb,
   updateClimb,

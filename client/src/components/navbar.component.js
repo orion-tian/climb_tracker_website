@@ -12,7 +12,7 @@ const Navbar = ({ currentUser }) => {
 
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark">
-      <Link to="/" className="navbar-brand">
+      <Link to="/" className="navbar-brand ms-5">
         Climb Tracker
       </Link>
 
@@ -24,7 +24,6 @@ const Navbar = ({ currentUser }) => {
                 Create Climb
               </Link>
             </li>
-
           )}
         </ul>
 
@@ -36,6 +35,7 @@ const Navbar = ({ currentUser }) => {
                   {currentUser.user.username}
                 </Link>
               </li>
+
               <li className="nav-item">
                 <Link to="/login" className="nav-link" onClick={logOut}>
                   LogOut
@@ -56,7 +56,6 @@ const Navbar = ({ currentUser }) => {
                 </Link>
               </li>
             </>
-
           )}
         </ul>
       </div>

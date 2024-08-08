@@ -17,7 +17,6 @@ const required = (value) => {
   }
 };
 
-
 const verifyUsername = (value) => {
   if (value.length < 3 || value.length > 25) {
     return (
@@ -116,7 +115,6 @@ const Signup = () => {
         </Form>
       </div>
     </div>
-
   );
 };
 export default Signup;

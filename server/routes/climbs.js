@@ -28,6 +28,7 @@ const upload = multer({
 })
 
 router.get('/', checkAuth, climbController.getClimbs);
+router.get('/usergroup', checkAuth, climbController.climbsPerUser);
 router.get('/:id', checkAuth, climbController.getClimb);
 router.post('/add', checkAuth, upload.single('image'), climbController.addClimb);
 router.patch('/update/:id', checkAuth, upload.single('image'), climbController.updateClimb);
