@@ -3,20 +3,19 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from 'react-router-dom';
 
-import axios from 'axios';
 import climbService from '../redux/services/climb.service';
+import { useSelector } from "react-redux";
 
 
 const EditClimb = () => {
   const { id } = useParams();
-  const [username, setUsername] = useState('');
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [image, setImage] = useState(null);
   const [imgSrc, setImgSrc] = useState('');
   const [description, setDescription] = useState('');
   const [grade, setGrade] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [date, setDate] = useState(new Date());
-  const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -24,7 +23,6 @@ const EditClimb = () => {
       try {
         const climbResponse = await climbService.getClimb(id);
         const { username, image, description, grade, attempts, date } = climbResponse.data;
-        setUsername(username);
         setImage(image);
         setDescription(description);
         setGrade(grade);
@@ -37,15 +35,7 @@ const EditClimb = () => {
       } catch (error) {
         console.log('Error fetching climb data: ', error);
         setError('Error fetching climb data');
-      }
-
-      try {
-        const usersResponse = await axios.get('http://localhost:5000/users/');
-        setUsers(usersResponse.data.map(user => user.username));
-      } catch (error) {
-        console.log('Error fetching users: ', error);
-        setError('Error fetching users');
-      }
+      };
 
     };
 
@@ -55,7 +45,7 @@ const EditClimb = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('username', username);
+    formData.append('username', currentUser.user.username);
     formData.append('image', image);
     formData.append('description', description);
     formData.append('grade', grade);
@@ -77,18 +67,6 @@ const EditClimb = () => {
     <div>
       <h3>Edit Climb Log</h3>
       <form onSubmit={onSubmit}>
-
-        <div className="form-group">
-          <label>Username: </label>
-          <select
-            className="form-control"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}>
-            {users.map(user => (
-              <option key={user} value={user}>{user}</option>
-            ))}
-          </select>
-        </div>
 
         <div className="form-group">
           <label>Choose an image: </label>

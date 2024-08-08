@@ -80,7 +80,6 @@ const ClimbsList = () => {
 
   return (
     <div>
-      <h3>Logged Climbs</h3>
       <table className="table">
         <thead className="thead">
           <tr>
