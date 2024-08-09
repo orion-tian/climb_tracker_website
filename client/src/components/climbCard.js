@@ -14,11 +14,15 @@ const Climb = ({ climb, deleteClimb }) => (
     )}
     <div className='card-info'>
       <div className="card-title">{climb.description}</div>
-      <div className="card-text">Grade: {climb.grade}</div>
-      <div className="card-text"> Attempts: {climb.attempts}</div>
-      <div className="card-date">Date: {climb.date.substring(0, 10)}</div>
-      <Link to={"/edit/" + climb._id} className="btn btn-primary">Edit</Link>
-      <button onClick={() => { deleteClimb(climb._id) }} className="btn btn-danger">Delete</button>
+      <div className="card-text">
+        <span><b>Grade: </b>{climb.grade}</span>
+        <span><b>Attempts: </b>{climb.attempts}</span>
+        <span><b>Date: </b>{climb.date.substring(0, 10)}</span>
+      </div>
+      <div className="d-flex justify-content-between ms-auto">
+        <Link to={"/edit/" + climb._id} className="btn btn-primary">Edit</Link>
+        <button onClick={() => { deleteClimb(climb._id) }} className="btn btn-danger">Delete</button>
+      </div>
     </div>
   </div>
 )
