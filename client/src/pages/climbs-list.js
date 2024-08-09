@@ -1,32 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
+import Climb from '../components/climbCard';
 import climbService from '../redux/services/climb.service';
-
-// functional component for rendering each row in the table
-const Climb = ({ climb, deleteClimb }) => (
-  <tr>
-    <td>
-      {climb.image && (
-        <img
-          src={'http://localhost:5000/' + climb.image}
-          alt="climb"
-          loading="lazy"
-          style={{ width: '200px', height: 'auto' }}
-        />
-      )}
-    </td>
-    <td>{climb.description}</td>
-    <td>{climb.grade}</td>
-    <td>{climb.attempts}</td>
-    <td>{climb.date.substring(0, 10)}</td>
-    <td>
-      <Link to={"/edit/" + climb._id}>edit</Link> |
-      <a href="#" onClick={() => { deleteClimb(climb._id) }}>delete</a>
-    </td>
-  </tr>
-)
+import '../css/climbCard.css';
 
 const ClimbsList = () => {
   const [climbs, setClimbs] = useState([]);
@@ -79,25 +57,10 @@ const ClimbsList = () => {
   if (error) { return <div>{error}</div>; }
 
   return (
-    <div>
-      <table className="table">
-        <thead className="thead">
-          <tr>
-            <th>Image</th>
-            <th>Description</th>
-            <th>Grade</th>
-            <th>Attempts</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ClimbListFunc()}
-        </tbody>
-      </table>
+    <div className='card-container'>
+      {ClimbListFunc()}
     </div >
   )
 }
-
 
 export default ClimbsList;
