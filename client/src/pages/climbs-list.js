@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
-import Climb from '../components/climbCard';
+import Climb from '../components/climb';
 import climbService from '../redux/services/climb.service';
 import '../css/climbCard.css';
 

@@ -8,7 +8,7 @@ import Signup from "./components/signup";
 import ClimbsList from "./pages/climbs-list";
 import EditClimb from "./pages/edit-climb";
 import CreateClimb from "./pages/create-climb";
-import Navbar from "./components/navbar.component";
+import Navbar from "./components/navbar";
 
 import { clearMessage } from "./redux/actions/message";
 
@@ -20,10 +20,11 @@ function App() {
   let location = useLocation();
 
   useEffect(() => {
+    console.log(location.pathname)
     if (["/login", "/signup"].includes(location.pathname)) {
       dispatch(clearMessage()); // clear message when changing location
     }
-  }, [dispatch]);
+  }, [dispatch, location.pathname]);
 
   return (
     <div>

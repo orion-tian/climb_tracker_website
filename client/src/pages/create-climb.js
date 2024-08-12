@@ -38,7 +38,7 @@ const CreateClimb = () => {
 
   return (
     <div>
-      <h3>Create New Climb Log</h3>
+      <h3>New Climb</h3>
       <form onSubmit={onSubmit}>
 
         <div className="form-group">
@@ -59,7 +59,7 @@ const CreateClimb = () => {
           />
         )}
 
-        <div className="form-group">
+        <div className="form-group mb-3">
           <label>Description: </label>
           <input type="text"
             required
@@ -69,38 +69,60 @@ const CreateClimb = () => {
           />
         </div>
 
-        <div className="form-group">
-          <label>Grade (V-Scale): </label>
-          <input
-            type="text"
-            className="form-control"
-            value={grade}
-            onChange={(e) => setGrade(e.target.value)}
-          />
-        </div>
+        <div className="parent">
+          <div className="row">
 
-        <div className="form-group">
-          <label>Attempts: </label>
-          <input
-            type="text"
-            className="form-control"
-            value={attempts}
-            onChange={(e) => setAttempts(e.target.value)}
-          />
-        </div>
+            <div className="col-md-4 mb-3">
+              <div className="form-group">
+                <label htmlFor="grade">Grade (V-Scale): </label>
+                <input
+                  id="grade"
+                  type="text"
+                  className="form-control"
+                  value={grade}
+                  onChange={(e) => setGrade(e.target.value)}
+                />
+              </div>
+            </div>
 
-        <div className="form-group">
-          <label>Date: </label>
-          <div>
-            <DatePicker
-              selected={date}
-              onChange={(e) => setDate(e)}
-            />
+            <div className="col-md-4 mb-3">
+              <div className="form-group">
+                <label htmlFor="attempts">Attempts: </label>
+                <input
+                  id="attempts"
+                  type="text"
+                  className="form-control"
+                  value={attempts}
+                  onChange={(e) => setAttempts(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-4 mb-3">
+              <div className="form-group">
+                <label htmlFor="date">Date: </label>
+                <div className="col-md-4 mb-3">
+                  <DatePicker
+                    id="date"
+                    selected={date}
+                    onChange={(date) => setDate(date)}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex">
+              <div className="form-group ms-auto">
+                <input
+                  type="submit"
+                  value="Create"
+                  className="btn btn-primary"
+                />
+              </div>
+            </div>
+
           </div>
-        </div>
-
-        <div className="form-group">
-          <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
         </div>
       </form>
     </div>

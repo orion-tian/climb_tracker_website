@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../css/climbCard.css';
 
-// functional component for rendering climb
+// functional component for rendering climb card
 const Climb = ({ climb, deleteClimb }) => (
   <div className="card">
     {climb.image && (
