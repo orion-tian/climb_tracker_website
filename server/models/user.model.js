@@ -9,7 +9,8 @@ const userSchema = new Schema({
     unique: true,
     trim: true,
     minlength: 3,
-    maxLength: 25
+    maxLength: 25,
+    match: [/^[a-zA-Z0-9_]+$/] //Username can only contain letters, numbers, and underscores
   },
   password: {
     type: String,

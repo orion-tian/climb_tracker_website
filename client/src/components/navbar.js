@@ -6,10 +6,6 @@ import { logout } from '../redux/actions/auth';
 const Navbar = ({ currentUser }) => {
   const dispatch = useDispatch();
 
-  const logOut = useCallback(() => {
-    dispatch(logout());
-  }, [dispatch]);
-
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark">
       <Link to="/" className="navbar-brand ms-5">
@@ -31,13 +27,13 @@ const Navbar = ({ currentUser }) => {
           {currentUser ? (
             <>
               <li className="nav-item">
-                <Link to={"/climbs"} className="nav-link">
+                <Link to={"/profile"} className="nav-link">
                   {currentUser.user.username}
                 </Link>
               </li>
 
               <li className="nav-item">
-                <Link to="/login" className="nav-link" onClick={logOut}>
+                <Link to="/login" className="nav-link" onClick={() => dispatch(logout())}>
                   Logout
                 </Link>
               </li>
