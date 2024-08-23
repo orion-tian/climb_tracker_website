@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
+import { Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 import Climb from '../components/climb';
 import climbService from '../redux/services/climb.service';
@@ -72,7 +74,14 @@ const ClimbsList = () => {
           <h5><center>Log your first climb!</center></h5>
         </div>
       )}
+      <Fab color="primary"
+        aria-label="add"
+        onClick={() => navigate("\create")}
+        style={{ position: 'fixed', bottom: 20, right: 20 }}>
+        <AddIcon />
+      </Fab>
     </div>
+
 
 
   )

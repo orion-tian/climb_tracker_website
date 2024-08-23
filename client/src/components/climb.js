@@ -20,7 +20,7 @@ const Climb = ({ climb, deleteClimb }) => (
         <span><b>Date: </b>{climb.date.substring(0, 10)}</span>
       </div>
       <div className="d-flex justify-content-between ms-auto">
-        <Link to={"/edit/" + climb._id} className="btn btn-primary">Edit</Link>
+        <Link to={"edit/" + climb._id} className="btn btn-primary">Edit</Link>
         <button onClick={() => { deleteClimb(climb._id) }} className="btn btn-danger">Delete</button>
       </div>
     </div>

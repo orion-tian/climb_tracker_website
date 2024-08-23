@@ -13,16 +13,6 @@ const Navbar = ({ currentUser }) => {
       </Link>
 
       <div className="collapse navbar-collapse">
-        <ul className="navbar-nav mr-auto">
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/create"} className="nav-link">
-                Create Climb
-              </Link>
-            </li>
-          )}
-        </ul>
-
         <ul className="navbar-nav ms-auto">
           {currentUser ? (
             <>
