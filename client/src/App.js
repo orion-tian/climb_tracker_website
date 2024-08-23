@@ -39,7 +39,6 @@ function App() {
           <Route path="/climbs" element={<ClimbsList />} />
           <Route path="/create" element={<CreateClimb />} />
           <Route path="/edit/:id" element={<EditClimb />} />
-
           <Route path="/profile" element={<Profile />} />
 
         </Routes>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
 import Climb from '../components/climb';
@@ -8,8 +8,11 @@ import '../css/climbCard.css';
 
 const ClimbsList = () => {
   const [climbs, setClimbs] = useState([]);
+  const [hasClimbs, setHasClimbs] = useState(false)
   const [error, setError] = useState('');
   const { user: currentUser } = useSelector((state) => state.auth);
+
+  let navigate = useNavigate();
 
   useEffect(() => {
     climbService.getClimbsPerUser()
@@ -17,6 +20,7 @@ const ClimbsList = () => {
         for (let i = 0; i < response.data.length; i++) {
           if (response.data[i].username === currentUser.user.username) {
             setClimbs(response.data[i].climbs)
+            setHasClimbs(true)
           }
         }
       })
@@ -24,13 +28,14 @@ const ClimbsList = () => {
         console.log('Error fecting climbs:', error);
         setError('Error fetching climbs');
       });
-  }, []);
+  }, [currentUser]);
 
   const deleteClimb = (id) => {
     climbService.deleteClimb(id)
       .then(res => {
         console.log(res.data);
         setClimbs(climbs.filter(el => el._id !== id));
+        navigate("/climbs");
       })
       .catch((error) => {
         console.log('Error deleting climb:', error);
@@ -57,9 +62,19 @@ const ClimbsList = () => {
   if (error) { return <div>{error}</div>; }
 
   return (
-    <div className='card-container'>
-      {ClimbListFunc()}
-    </div >
+    <div>
+      {hasClimbs ? (
+        <div className='card-container'>
+          {ClimbListFunc()}
+        </div >
+      ) : (
+        <div className="mt-4">
+          <h5><center>Log your first climb!</center></h5>
+        </div>
+      )}
+    </div>
+
+
   )
 }
 
