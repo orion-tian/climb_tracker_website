@@ -15,7 +15,7 @@ const Climb = ({ climb, deleteClimb }) => (
     <div className='card-info'>
       <div className="card-title">{climb.description}</div>
       <div className="card-text">
-        <span><b>Grade: </b>{climb.grade}</span>
+        <span><b>Grade: </b>V{climb.grade}</span>
         <span><b>Attempts: </b>{climb.attempts}</span>
         <span><b>Date: </b>{climb.date.substring(0, 10)}</span>
       </div>

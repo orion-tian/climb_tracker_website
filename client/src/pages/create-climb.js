@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
+import { Grid, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, TextField, Button } from '@mui/material';
 
 import climbService from '../redux/services/climb.service';
 
@@ -10,7 +11,7 @@ const CreateClimb = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState('');
   const [grade, setGrade] = useState(0);
-  const [attempts, setAttempts] = useState(0);
+  const [attempts, setAttempts] = useState("0");
   const [date, setDate] = useState(new Date());
   const [error, setError] = useState('');
 
@@ -38,17 +39,16 @@ const CreateClimb = () => {
 
   return (
     <div>
-      <h3>New Climb</h3>
       <form onSubmit={onSubmit}>
 
-        <div className="form-group">
-          <label>Choose an image: </label>
-          <input type="file"
+        <FormControl fullWidth margin="normal">
+          <FormLabel>Choose an image:</FormLabel>
+          <input
+            type="file"
             accept=".png, .jpg, .jpeg"
-            className="form-control"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={(e) => { setImage(e.target.files[0]) }}
           />
-        </div>
+        </FormControl>
 
         {image && (
           <img
@@ -59,73 +59,73 @@ const CreateClimb = () => {
           />
         )}
 
-        <div className="form-group mb-3">
-          <label>Description: </label>
-          <input type="text"
-            required
-            className="form-control"
+        <FormControl fullWidth margin="normal">
+          <TextField
+            label="Description"
+            variant="filled"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+        </FormControl>
+
+        <Grid container spacing={3} margin="normal">
+          <Grid item xs={12} sm={2}>
+            <FormControl fullWidth>
+              <TextField
+                label="Grade (V-Scale)"
+                variant="standard"
+                type="text"
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              <FormLabel>Attempts</FormLabel>
+              <RadioGroup
+                row
+                value={attempts} // Controlled value
+                onChange={(e) => setAttempts(e.target.value)}
+              >
+                <FormControlLabel value="Flash!" control={<Radio />} label="Flash!" />
+                <FormControlLabel value="2-5" control={<Radio />} label="2-5" />
+                <FormControlLabel value="5-10" control={<Radio />} label="5-10" />
+                <FormControlLabel value="10-20" control={<Radio />} label="10-20" />
+                <FormControlLabel value="20+" control={<Radio />} label="20+" />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} sm={2}>
+            <FormControl fullWidth>
+              <TextField
+                label="Date"
+                type="date"
+                variant="standard"
+                InputLabelProps={{ shrink: true }}
+                value={date.toISOString().split('T')[0]} // Format date as yyyy-mm-dd
+                onChange={(e) => setDate(new Date(e.target.value))}
+              />
+            </FormControl>
+          </Grid>
+
+        </Grid>
+
+        <div className="d-flex">
+          <FormControl className="form-group ms-auto" margin="normal">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+            >
+              Create Climb
+            </Button>
+          </FormControl>
         </div>
-
-        <div className="parent">
-          <div className="row">
-
-            <div className="col-md-4 mb-3">
-              <div className="form-group">
-                <label htmlFor="grade">Grade (V-Scale): </label>
-                <input
-                  id="grade"
-                  type="text"
-                  className="form-control"
-                  value={grade}
-                  onChange={(e) => setGrade(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-md-4 mb-3">
-              <div className="form-group">
-                <label htmlFor="attempts">Attempts: </label>
-                <input
-                  id="attempts"
-                  type="text"
-                  className="form-control"
-                  value={attempts}
-                  onChange={(e) => setAttempts(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-md-4 mb-3">
-              <div className="form-group">
-                <label htmlFor="date">Date: </label>
-                <div className="col-md-4 mb-3">
-                  <DatePicker
-                    id="date"
-                    selected={date}
-                    onChange={(date) => setDate(date)}
-                    className="form-control"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="d-flex">
-              <div className="form-group ms-auto">
-                <input
-                  type="submit"
-                  value="Create"
-                  className="btn btn-primary"
-                />
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </form>
-    </div>
+      </form >
+    </div >
   )
 }
 

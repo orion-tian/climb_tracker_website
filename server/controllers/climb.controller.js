@@ -43,7 +43,7 @@ exports.addClimb = (req, res) => {
   const image = req.file.path;
   const description = req.body.description;
   const grade = Number(req.body.grade);
-  const attempts = Number(req.body.attempts);
+  const attempts = req.body.attempts;
   const date = Date.parse(req.body.date);
 
   const newClimb = new Climb({ username, image, description, grade, attempts, date });
@@ -72,7 +72,7 @@ exports.updateClimb = async (req, res) => {
       if (req.body.username) climb.username = req.body.username;
       if (req.body.description) climb.description = req.body.description;
       if (req.body.grade) climb.grade = Number(req.body.grade);
-      if (req.body.attempts) climb.attempts = Number(req.body.attempts);
+      if (req.body.attempts) climb.attempts = req.body.attempts;
       if (req.body.date) climb.date = Date.parse(req.body.date);
 
       climb.save()

@@ -21,7 +21,7 @@ const climbSchema = new Schema({
     required: true
   },
   attempts: {
-    type: Number,
+    type: String,
     required: true
   },
   date: {
