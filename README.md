@@ -10,7 +10,7 @@ Each climb shows its corresponding image along with the description, grade, atte
 
 ![](README_imgs/climbs2.png) 
 
-If you click on the floating plus button, you can add a new climbs you've done. 
+If you click on the floating plus button, you can add a new climb you've done. 
 
 ![](README_imgs/create_empty.png)
 
